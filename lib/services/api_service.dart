@@ -125,4 +125,29 @@ class ApiService {
     );
     return response.statusCode == 200;
   }
+
+  // UPDATE PROFILE
+  Future<Map<String, dynamic>> updateProfile({
+    required String name,
+    required String email,
+    String? password,
+  }) async {
+    final headers = await getHeaders();
+    final body = {
+      'name':  name,
+      'email': email,
+      if (password != null && password.isNotEmpty) ...{
+        'password':              password,
+        'password_confirmation': password,
+      },
+    };
+
+    final response = await http.put(
+      Uri.parse('${ApiConfig.baseUrl}/profile'),
+      headers: headers,
+      body: jsonEncode(body),
+    );
+
+    return {'status': response.statusCode, 'data': jsonDecode(response.body)};
+  }
 }
